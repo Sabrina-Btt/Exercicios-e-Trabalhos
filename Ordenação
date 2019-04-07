@@ -1,0 +1,135 @@
+#include <stdio.h>
+
+void printvet(int vetor[]) {
+  int i;
+  for(i=0; i<6; i++) {
+    printf("%d ", vetor[i]);
+  }
+  printf("\n");
+}
+
+void troca(int vet[], int a, int b) {
+  int aux = vet[a];
+  vet[a] = vet[b];
+  vet[b] = aux;
+};
+
+void quickSort(int vet[], int ini, int fim) {
+  int pivo, ult, i;
+  if(ini <= fim) {
+    pivo = ini;
+    ult = ini;
+    for(i=ini+1; i<=fim; i++) {
+      if(vet[i] <= vet[pivo]) {
+        ult++;
+        troca(vet, ult, i);
+      }
+    }
+    troca(vet, pivo, ult);
+    quickSort(vet, ini,ult-1);
+    quickSort(vet, ult+1,fim);
+  }
+}
+
+void selectSort(int vet[],int tam){
+     int i,j,menor,aux;
+     for(i=0;i<(tam-1);i++){
+        menor=i;
+          for(j=(i+1);j<tam;j++){
+              if(vet[j]<vet[menor])
+                 menor=j;
+        }
+      if (vet[i] != vet[menor]){
+       aux = vet[i];
+       vet[i] = vet[menor];
+       vet[menor] = aux;
+    }
+  }
+}
+
+void merge(int vet[], int r[], int ini, int meio, int fim){
+    int idA=ini, idB=meio+1, fimA=meio, fimB=fim;
+    int pos=0,i;
+    while(idA<=fimA && idB<=fimB){
+        if(vet[idA]<vet[idB]){
+            r[pos]=vet[idA];
+            idA++;
+            pos++;
+        }
+        else {
+            r[pos]=vet[idB];
+            idB++;
+            pos++;
+        }
+    }
+    if(idA>fimA){
+        while(idB<=fimB){
+            r[pos]=vet[idB];
+            idB++;
+            pos++;
+
+        }
+    }
+    else{
+        while(idA<=fimA){
+            r[pos]=vet[idA];
+            idA++;
+            pos++;
+
+        }
+    }
+    for(i=ini;i<fim;i++){
+        vet[i]=r[i];
+    }
+}
+
+void mergeSort(int vet[],int ini,int fim){
+     int meio;
+     int r[6];
+     if(ini<fim){
+        meio= (ini+fim)/2;
+        mergeSort(vet,ini,meio);
+        mergeSort(vet,meio+1,fim);
+        merge(vet,r,ini,meio,fim);
+
+     }
+}
+
+int main(void) {
+  int vetor[6];
+  vetor[0] = 7;
+  vetor[1] = 3;
+  vetor[2] = 2;
+  vetor[3] = 8;
+  vetor[4] = 1;
+  vetor[5] = 4;
+  quickSort(vetor,0,5);
+  printvet(vetor);
+  selectSort(vetor,6);
+  printvet(vetor);
+  mergeSort(vetor,0,5);
+  printvet(vetor);
+  return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
