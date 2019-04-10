@@ -1,4 +1,17 @@
 #include <stdio.h>
+#include <time.h>
+
+//int r[6];
+
+void criaVet(tam){
+    int i;
+    int** vetor=(int*)malloc(tam(sizeof(int)));
+    int** r=(int*)malloc(tam(sizeof(int)));
+    srand(time(NULL));
+    for(i=0;i<tam;i++)
+        v[i]= rand()%10001;
+
+}
 
 void printvet(int vetor[]) {
   int i;
@@ -49,7 +62,8 @@ void selectSort(int vet[],int tam){
 
 void merge(int vet[], int r[], int ini, int meio, int fim){
     int idA=ini, idB=meio+1, fimA=meio, fimB=fim;
-    int pos=0,i;
+    int pos=ini,i;
+
     while(idA<=fimA && idB<=fimB){
         if(vet[idA]<vet[idB]){
             r[pos]=vet[idA];
@@ -67,7 +81,6 @@ void merge(int vet[], int r[], int ini, int meio, int fim){
             r[pos]=vet[idB];
             idB++;
             pos++;
-
         }
     }
     else{
@@ -75,34 +88,35 @@ void merge(int vet[], int r[], int ini, int meio, int fim){
             r[pos]=vet[idA];
             idA++;
             pos++;
-
         }
     }
-    for(i=ini;i<fim;i++){
+    for(i=ini;i<=fim;i++){
         vet[i]=r[i];
     }
 }
 
 void mergeSort(int vet[],int ini,int fim){
      int meio;
-     int r[6];
+
      if(ini<fim){
         meio= (ini+fim)/2;
         mergeSort(vet,ini,meio);
         mergeSort(vet,meio+1,fim);
         merge(vet,r,ini,meio,fim);
-
-     }
+    }
 }
 
 int main(void) {
-  int vetor[6];
+
+  criaVet();
+
+  /*int vetor[6];
   vetor[0] = 7;
   vetor[1] = 3;
   vetor[2] = 2;
   vetor[3] = 8;
   vetor[4] = 1;
-  vetor[5] = 4;
+  vetor[5] = 4;*/
   quickSort(vetor,0,5);
   printvet(vetor);
   selectSort(vetor,6);
@@ -111,6 +125,16 @@ int main(void) {
   printvet(vetor);
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
