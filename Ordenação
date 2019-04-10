@@ -1,17 +1,21 @@
 #include <stdio.h>
 #include <time.h>
+#define tam 5
 
-//int r[6];
+int r[tam];
 
-void criaVet(tam){
+
+/*void criaVet(tam){
+    FILE *f;
     int i;
-    int** vetor=(int*)malloc(tam(sizeof(int)));
-    int** r=(int*)malloc(tam(sizeof(int)));
+    int** vetor=(int*)malloc(tam*(sizeof(int)));
+    f=fopen("vetor1.txt","a+");
     srand(time(NULL));
-    for(i=0;i<tam;i++)
-        v[i]= rand()%10001;
-
-}
+        for(i=0;i<tam;i++){
+            fprintf(f,"%d ",rand()%10001);
+            fscanf(f,"%d ",vetor[i]);
+        }
+}*/
 
 void printvet(int vetor[]) {
   int i;
@@ -44,7 +48,7 @@ void quickSort(int vet[], int ini, int fim) {
   }
 }
 
-void selectSort(int vet[],int tam){
+void selectSort(int vet[], int tam){
      int i,j,menor,aux;
      for(i=0;i<(tam-1);i++){
         menor=i;
@@ -106,9 +110,20 @@ void mergeSort(int vet[],int ini,int fim){
     }
 }
 
+
+
 int main(void) {
 
-  criaVet();
+   FILE *f;
+    int i;
+    int *vetor=(int*)malloc(tam*(sizeof(int)));
+    f=fopen("vetor1.txt","a+");
+    srand(time(NULL));
+        for(i=0;i<tam;i++){
+            fprintf(f,"%d ",rand()%10001);
+            fscanf(f,"%d ",vetor[i]);
+        }
+
 
   /*int vetor[6];
   vetor[0] = 7;
@@ -117,14 +132,35 @@ int main(void) {
   vetor[3] = 8;
   vetor[4] = 1;
   vetor[5] = 4;*/
-  quickSort(vetor,0,5);
+  quickSort(vetor,0,tam-1);
   printvet(vetor);
-  selectSort(vetor,6);
+  selectSort(vetor,tam);
   printvet(vetor);
-  mergeSort(vetor,0,5);
+  mergeSort(vetor,0,tam-1);
   printvet(vetor);
+
+  free(r);
+  free(vetor);
+
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
