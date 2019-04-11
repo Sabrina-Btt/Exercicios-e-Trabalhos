@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define tam 100000000
+#define tam 10000000
 
 int r[tam];
 
@@ -100,11 +100,16 @@ void mergeSort(int vet[],int ini,int fim){
 
 
 
+
+
 int main(void) {
 
    FILE *f, *r;
     int i,a;
     int *vetor=(int*)calloc(tam,(sizeof(int)));
+    int *vetaux1=(int*)calloc(tam,(sizeof(int)));
+    int *vetaux2=(int*)calloc(tam,(sizeof(int)));
+
     f=fopen("vetor1.txt","w");
     srand(time(NULL));
         for(i=0;i<=tam;i++){
@@ -116,6 +121,8 @@ int main(void) {
     for(i=0; i<=tam;i++) {
         fscanf(r,"%d ", &a);
         vetor[i] = a;
+        vetaux1[i] = a;
+        vetaux2[i] = a;
   }
   fclose(r);
   //printvet(vetor);
@@ -128,19 +135,35 @@ int main(void) {
     Ticks[1] = clock();
     double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
     //printvet(vetor);
-    printf("Tempo gasto: %g ms.", Tempo);
+    printf("Tempo gasto merge sort: %g ms.\n", Tempo);
 
-  //quickSort(vetor,0,tam);
-  //selectSort(vetor,tam);
-  //printvet(vetor);
-  //mergeSort(vetor,0,tam);
-  //printvet(vetor);
+    clock_t Tick[2];
+    Tick[0] = clock();
+
+    quickSort(vetaux1,0,tam);
+
+    Tick[1] = clock();
+    double Temp = (Tick[1] - Tick[0]) * 1000.0 / CLOCKS_PER_SEC;
+    //printvet(vetor);
+    printf("Tempo gasto quick sort: %g ms.\n", Temp);
+
+    /*clock_t Tic[2];
+    Tic[0] = clock();
+
+    selectSort(vetaux2,tam);
+
+    Tic[1] = clock();
+    double T = (Tic[1] - Tic[0]) * 1000.0 / CLOCKS_PER_SEC;
+    //printvet(vetor);
+    printf("Tempo gasto select sort: %g ms.\n", T);*/
+
 
   free(r);
   free(vetor);
 
   return 0;
 }
+
 
 
 
