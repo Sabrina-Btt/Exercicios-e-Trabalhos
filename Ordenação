@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define tam 5
+#define tam 100000000
 
 int r[tam];
 
 void printvet(int vetor[]) {
   int i;
-  for(i=0; i<6; i++) {
+  for(i=0; i<tam; i++) {
     printf("%d ", vetor[i]);
   }
   printf("\n");
@@ -118,21 +118,40 @@ int main(void) {
         vetor[i] = a;
   }
   fclose(r);
-  printvet(vetor);
+  //printvet(vetor);
+  //printf("fim \n");
+    clock_t Ticks[2];
+    Ticks[0] = clock();
 
-  
-  quickSort(vetor,0,tam);
-  printvet(vetor);
-  selectSort(vetor,tam);
-  printvet(vetor);
-  mergeSort(vetor,0,tam);
-  printvet(vetor);
+    mergeSort(vetor,0,tam);
+
+    Ticks[1] = clock();
+    double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
+    //printvet(vetor);
+    printf("Tempo gasto: %g ms.", Tempo);
+
+  //quickSort(vetor,0,tam);
+  //selectSort(vetor,tam);
+  //printvet(vetor);
+  //mergeSort(vetor,0,tam);
+  //printvet(vetor);
 
   free(r);
   free(vetor);
 
   return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
