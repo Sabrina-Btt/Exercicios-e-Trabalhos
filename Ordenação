@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define tam 10000000
+#define tam 1000000000
 
-int r[tam];
+int a[tam];
 
 void printvet(int vetor[]) {
   int i;
@@ -52,38 +52,38 @@ void selectSort(int vet[], int t){
   }
 }
 
-void merge(int vet[], int r[], int ini, int meio, int fim){
+void merge(int vet[], int a[], int ini, int meio, int fim){
     int idA=ini, idB=meio+1, fimA=meio, fimB=fim;
     int pos=ini,i;
 
     while(idA<=fimA && idB<=fimB){
         if(vet[idA]<vet[idB]){
-            r[pos]=vet[idA];
+            a[pos]=vet[idA];
             idA++;
             pos++;
         }
         else {
-            r[pos]=vet[idB];
+            a[pos]=vet[idB];
             idB++;
             pos++;
         }
     }
     if(idA>fimA){
         while(idB<=fimB){
-            r[pos]=vet[idB];
+            a[pos]=vet[idB];
             idB++;
             pos++;
         }
     }
     else{
         while(idA<=fimA){
-            r[pos]=vet[idA];
+            a[pos]=vet[idA];
             idA++;
             pos++;
         }
     }
     for(i=ini;i<=fim;i++){
-        vet[i]=r[i];
+        vet[i]=a[i];
     }
 }
 
@@ -94,7 +94,7 @@ void mergeSort(int vet[],int ini,int fim){
         meio= (ini+fim)/2;
         mergeSort(vet,ini,meio);
         mergeSort(vet,meio+1,fim);
-        merge(vet,r,ini,meio,fim);
+        merge(vet,a,ini,meio,fim);
     }
 }
 
@@ -105,24 +105,24 @@ void mergeSort(int vet[],int ini,int fim){
 int main(void) {
 
    FILE *f, *r;
-    int i,a;
+    int i,n;
     int *vetor=(int*)calloc(tam,(sizeof(int)));
     int *vetaux1=(int*)calloc(tam,(sizeof(int)));
     int *vetaux2=(int*)calloc(tam,(sizeof(int)));
 
     f=fopen("vetor1.txt","w");
     srand(time(NULL));
-        for(i=0;i<=tam;i++){
+        for(i=0;i<tam;i++){
             fprintf(f,"%d ",rand()%1000);
         }
     fclose(f);
 
     r=fopen("vetor1.txt","r");
-    for(i=0; i<=tam;i++) {
-        fscanf(r,"%d ", &a);
-        vetor[i] = a;
-        vetaux1[i] = a;
-        vetaux2[i] = a;
+    for(i=0; i<tam;i++) {
+        fscanf(r,"%d ", &n);
+        vetor[i] = n;
+        vetaux1[i] = n;
+        vetaux2[i] = n;
   }
   fclose(r);
   //printvet(vetor);
@@ -147,7 +147,7 @@ int main(void) {
     //printvet(vetor);
     printf("Tempo gasto quick sort: %g ms.\n", Temp);
 
-    /*clock_t Tic[2];
+    clock_t Tic[2];
     Tic[0] = clock();
 
     selectSort(vetaux2,tam);
@@ -155,15 +155,15 @@ int main(void) {
     Tic[1] = clock();
     double T = (Tic[1] - Tic[0]) * 1000.0 / CLOCKS_PER_SEC;
     //printvet(vetor);
-    printf("Tempo gasto select sort: %g ms.\n", T);*/
+    printf("Tempo gasto select sort: %g ms.\n", T);
 
 
-  free(r);
+  free(vetaux1);
+  free(vetaux2);
   free(vetor);
 
   return 0;
 }
-
 
 
 
