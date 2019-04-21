@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define N 1001
+#define NUM 101
+
+void procuraSubsequencia(char seq[], char sub[]){
+     int i=0;
+     int j=0;
+
+   do{
+        if(seq[i]==sub[j])
+           j++;
+        else j=0;
+        i++;
+   }
+   while(seq[i]!='\0'||sub[j]!='\0');
+
+   if(seq[i]=='\0')
+      printf("no");
+   else printf("yes");
+
+}
+
+int main () {
+    char seq[N];
+    char sub[NUM];
+
+    printf("Digite a sequencia: ");
+    scanf("%s",seq);
+
+    printf("Digite a subsequencia: ");
+    scanf("%s",sub);
+
+    procuraSubsequencia(seq,sub);
+
+
+
+}
+
+
+
+
+
