@@ -4,7 +4,6 @@ include <stdio.h>
 void bubble(int vet[], int n){
     int i,j,aux,cont=0;
     for(i=0;i<n;i++){
-        printf("%d ",vet[i]);
             for(j=1;j<n-i;j++){
 
                 if(vet[j]<vet[j-1]){
@@ -16,7 +15,6 @@ void bubble(int vet[], int n){
 
             }
     }
-   printf("%d",cont);
    if(cont%2 == 0)
     printf("Carlos\n");
    else
