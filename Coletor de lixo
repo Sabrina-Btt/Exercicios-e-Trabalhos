@@ -1,0 +1,66 @@
+typedef struct node {
+	int val;
+	int refs;
+  struct node * next;
+  struct node * prev;
+} nint;
+
+nint* Heap = NULL;
+
+nint* malloc2() {
+  nint * novo = (nint*)malloc(sizeof(nint));
+  novo->prev = NULL;
+  novo->next = Heap;
+  novo->refs++;
+
+  if(Heap != NULL) Heap->prev = novo;
+  return Heap = novo;
+}
+
+void removeFromHeap(nint* target) {
+  (target->prev)->next = target->next;
+  (target->next)->prev = target->prev;
+  free(target);
+}
+
+void atrib(nint* var, int val) {
+  var->val = val;
+}
+
+void atrib2(nint* var1, nint* var2) {
+  if(var1 != NULL) {
+    var1->refs--;
+    if(var1->refs == 0) {
+      removeFromHeap(var1);
+    }
+  }
+  var1 = var2;
+}
+
+//----------------------------------------------------------------------------------------
+// nint *v, *w, *p = NULL;
+
+// v = malloc2();
+// atrib(v,20);
+
+// atrib2(p,v); // 1) v->refs-- // 3) checar se  // 3) v = p // 
+// atrib2(p,v); // 1) v->refs-- // 3) checar se  // 3) v = p // 
+
+/*código da main---------------------------------------------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+#include "coletor.h"
+
+int main() {
+  printf("a");
+  nint *v, *w, *p = NULL;
+  v = malloc2();
+
+  atrib(v,30);
+  printf("%d\n", (v->val));
+
+  atrib2(w,v);
+  // printf("%d\n", (w->val));
+  
+  return 0;
+}*/
