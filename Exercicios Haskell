@@ -1,6 +1,14 @@
+--exercicio 1--
 main :: IO ()    
 main = return ()
 del_posicao_n :: [Int] -> Int -> [Int] 
 lista == [] = 0;
 del_posicao_n (a:b) 1 = b;
 del_posicao_n (a:b) n = a: del_posicao_n b (n-1)
+
+--exercicio 2--
+main :: IO ()    
+main = return ()
+ord []=[]
+ord(a:b)=ord[n|n<-b, n<=a]++[a]++ord[n|n<-b, n>a]
+impares lista = ord (filter odd lista) 
