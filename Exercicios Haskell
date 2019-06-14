@@ -12,3 +12,13 @@ main = return ()
 ord []=[]
 ord(a:b)=ord[n|n<-b, n<=a]++[a]++ord[n|n<-b, n>a]
 impares lista = ord (filter odd lista) 
+
+--exercicio 3--
+main :: IO ()    
+main = return ()
+fib 0 = 0
+fib 1 = 1
+fib n = fib(n-1) + fib(n-2)
+
+lfib 1 = [0,1]
+lfib n = lfib(n-1)++[fib(n-1)+fib(n-2)]
