@@ -84,3 +84,53 @@ compara (h:b) (h1:b1)
 tam [] = 0
 tam (h:b) = 1 + tam b 
   
+--exercicio 13--
+limites l = limites_aux l (maxBound :: Int) 0
+
+
+limites_aux [] min max = (min, max)
+limites_aux (cab:corpo) min max 
+    | cab > max = limites_aux (corpo) min cab
+    | cab < min = limites_aux (corpo) cab max
+    | otherwise = limites_aux (corpo) min max
+
+--exercicio 14--
+existe elem [] = False 
+existe elem (cab:corpo)
+    | elem == cab = True
+    | otherwise = existe elem corpo
+
+remDuplicatas [] = []
+remDuplicatas (cab:corpo) 
+    | existe cab corpo = remDuplicatas corpo
+    | otherwise = [cab] ++ remDuplicatas corpo
+    
+--exercicio 15--
+somaQuadrados 0 = 0
+somaQuadrados elem = elem * elem + somaQuadrados (elem - 1)
+
+--exercicio 16--
+insereF elem [] = [elem]
+insereF elem (cab:corpo) = [cab] ++ insereF elem corpo
+
+removeF [] = []
+removeF (cab:corpo) = corpo
+
+calculaTam [] = 0
+calculaTam (cab:corpo) = 1 + calculaTam (corpo)
+
+--exercicio 17--
+insereP elem [] = [elem]
+insereP elem (cab:corpo) = insereP elem corpo ++ [cab]
+
+removeP [] = []
+removeP (cab:corpo) = corpo
+
+--exercicio 19a)--
+soma_poli [] [] = []
+soma_poli [] (cab2:corpo2) = (cab2:corpo2)
+soma_poli (cab1:corpo1) [] = (cab1:corpo1)
+soma_poli (cab1:corpo1) (cab2:corpo2)
+    | (snd cab1) > (snd cab2) = [cab1] ++ soma_poli corpo1 (cab2:corpo2)
+    | (snd cab1) < (snd cab2) = [cab2] ++ soma_poli corpo2 (cab1:corpo1)
+    | otherwise = [((fst cab1 + fst cab2),(snd cab2))] ++ soma_poli corpo1 corpo2
