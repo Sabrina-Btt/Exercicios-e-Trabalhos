@@ -1,9 +1,8 @@
-
-
 public static void showMenu(int nConta){
  int opcao;
  do{
    System.out.println("Saldo: " + vet[nConta].getSaldo());
+   System.out.println("Emprestimo: " + vet[nConta].getEmprestimo());
    System.out.println("O que voce deseja?");
    System.out.println("1- Realizar Deposito");
    System.out.println("2- Realizar Saque");
