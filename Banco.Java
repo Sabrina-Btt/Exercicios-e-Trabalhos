@@ -1,5 +1,4 @@
 abstract class ContaBancaria {
-  private int nConta, senha;
   private double saldo;
   private Cliente dono;
 
@@ -160,7 +159,7 @@ class Main {
       if(clientes[nConta].getTipoConta()) {
         System.out.println("\nNome: " + clientes[nConta].getNome());
         System.out.println("Nº da Conta: 0" + clientes[nConta].getId());
-        System.out.println("Saldo: R$" + (conta.getSaldo()+conta.getEmprestimo()) + " (Emprestimo: R$" + conta.getEmprestimo() + ")");
+        // System.out.println("Saldo: R$" + (conta.getSaldo()+conta.getEmprestimo()) + " (Emprestimo: R$" + conta.getEmprestimo() + ")");
         System.out.println("\nO que voce deseja?");
         System.out.println("1- Realizar Depósito");
         System.out.println("2- Realizar Saque");
