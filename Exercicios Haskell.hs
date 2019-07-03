@@ -134,3 +134,42 @@ soma_poli (cab1:corpo1) (cab2:corpo2)
     | (snd cab1) > (snd cab2) = [cab1] ++ soma_poli corpo1 (cab2:corpo2)
     | (snd cab1) < (snd cab2) = [cab2] ++ soma_poli corpo2 (cab1:corpo1)
     | otherwise = [((fst cab1 + fst cab2),(snd cab2))] ++ soma_poli corpo1 corpo2
+    
+ --exercicio 20--
+ lista_igual [] [] = True
+lista_igual [] (h2:b2) = False
+lista_igual (h1:b1) [] = False
+lista_igual (h1:b1) (h2:b2)
+	| h1 == h2 = True && lista_igual b1 b2
+	| otherwise = False
+
+matrizes_igual [] [] = True
+matrizes_igual (h1:b1) [] = False
+matrizes_igual [] (h2:b2) = False
+matrizes_igual (h1:b1) (h2:b2) = (lista_igual h1 h2) && (matrizes_igual b1 b2)
+
+--exercicio 21--
+somatorio li lf f
+	| li == lf = (f li)
+	| otherwise	= (f li) + (somatorio (li+1) lf f)
+	
+--exercicio 22--
+merge [] [] = []
+merge [] (h2:b2) = (h2:b2)
+merge (h1:b1) [] = (h1:b1)
+merge (h1:b1) (h2:b2)	  
+	| h1 < h2 = [h1] ++ (merge b1 (h2:b2))
+	| otherwise = [h2] ++ (merge (h1:b1) b2)
+
+--exercicio 23--
+conv_int_str _ [] = []
+conv_int_str (h1:b1) (h2:b2) = (acha (h1:b1) h2) ++ conv_int_str (h1:b1) b2
+
+
+acha [] _ = []
+acha (h1:b1) elem
+	| (fst h1) == elem = [(snd h1)]
+	| otherwise = acha b1 elem
+	
+    
+    
