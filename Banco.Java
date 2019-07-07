@@ -3,7 +3,8 @@ import java.util.Scanner;
 abstract class ContaBancaria {
   private double saldo;
   private Cliente dono;
-  private double emprestimo=0;
+  private double emprestimo;
+
 
   public abstract void aplicaJuros();
 
@@ -31,7 +32,9 @@ abstract class ContaBancaria {
   public void saque(double valor) {
     double saldo = getSaldo();
     if(valor <= saldo) setSaldo(saldo-valor);
-    else System.out.println("Você não possui saldo suficiente para sacar este valor!");
+    else {
+      System.out.println("Você não possui saldo suficiente para sacar este valor!");
+    }
   }
 
   public double getEmprestimo() {
@@ -39,12 +42,19 @@ abstract class ContaBancaria {
   }
 
   public void setEmprestimo(double emprestimo) {
-    if(emprestimo !=0) {
-      double saldo = getSaldo();
-      setSaldo(saldo+emprestimo);
-    }
-    System.out.println("Empréstimo já realizado!");
     this.emprestimo = emprestimo;
+  }
+
+  public void pedirEmprestimo(double emprestimo) {
+    if(emprestimo<1) System.out.println("Você precisa digitar um valor maior que R$1.");
+    else {
+      if(getEmprestimo() > 0) System.out.println("Empréstimo já realizado!");
+      else {
+        double saldo = (getSaldo() - getEmprestimo());
+        setSaldo(saldo+emprestimo);
+        setEmprestimo(emprestimo);
+      }
+    }
   }
 
   public void quitaEmprestimo() {
@@ -64,6 +74,7 @@ class ContaCorrente extends ContaBancaria {
   public ContaCorrente(int saldo, Cliente dono) {
     setSaldo(saldo);
     setDono(dono);
+    setEmprestimo(0);
   }
 
   public void aplicaJuros() {
@@ -145,10 +156,10 @@ class Cliente {
   }
 }
 
-class Main {
-  static int nClientes=0;
+class BancoC {
+  static int nClientes=0, tam=3;
   
-  public static int cadastro(Cliente[] clientes) {
+  public static void cadastro(Cliente[] clientes) {
     Scanner scanner = new Scanner(System. in);
     System.out.println("\nDigite o nome do cliente: ");
     String inputString = scanner.nextLine();
@@ -160,15 +171,40 @@ class Main {
     int tipoConta;
     System.out.println("Digite 1- Corrente 0- Poupança: ");
     tipoConta = Integer.parseInt(System.console().readLine());
+    int i;
+    for(i=0; i<tam; i++) {
+      if(clientes[i] == null) {
+        if(tipoConta == 1) clientes[i] = new Cliente(inputString, i, senha, true);
+        else clientes[i] = new Cliente(inputString, i, senha, false);
+        System.out.println("\nNova conta criada. Nº: " + i + " - Nome: " + inputString + "\n");
+        nClientes++;
+        return;
+      }
+    }
+    System.out.println("Não temos mais espaço para cadastro!\n");
+  }
 
-    if(tipoConta == 1) clientes[nClientes] = new Cliente(inputString, 0, senha, true);
-    else clientes[nClientes] = new Cliente(inputString, 0, senha, false);
-
-    System.out.println("\nNova conta criada. Nº: " + nClientes + " - Nome: " + inputString + "\n");
-
-    nClientes++;
-
-    return nClientes-1;
+  public static void deleta(Cliente[] clientes){
+    int nConta;
+    System.out.println("\nDigite o numero da conta: ");
+    nConta = Integer.parseInt(System.console().readLine());
+    if(nClientes>0) {
+      for(int i=0;i<tam;i++) {
+        if(clientes[i] != null && clientes[i].getId() == nConta) {
+          int answ;
+          System.out.println("Você tem certeza que deseja deletar a conta Nº " + clientes[i].getId() + " de " + clientes[i].getNome() + "?\n");
+          System.out.println("1- Sim\n0- Não\n");
+          answ = Integer.parseInt(System.console().readLine());
+          if(answ == 1) {
+            clientes[i]=null;
+            System.out.println("Conta Nº " + clientes[i].getId() + " deletada com sucesso.");
+            return;
+          }
+          else return;
+        }
+      }
+      System.out.println("Nº de conta não encontrado.\n");
+    }
   }
 
   public static void pulaMes(Cliente[] clientes) {
@@ -211,7 +247,7 @@ class Main {
           case 3:
             System.out.println("\nQual o valor do empréstimo?");
             valor = Integer.parseInt(System.console().readLine());
-            conta.setEmprestimo(valor);
+            conta.pedirEmprestimo(valor);
             break;
           case 4:
             conta.quitaEmprestimo();
@@ -252,7 +288,7 @@ class Main {
             conta.saque(valor);
             break;
           case 3:
-            System.out.println("\n1 Mês pulado?");
+            System.out.println("\n1 Mês pulado.");
             pulaMes(clientes);
             break;
           case 4:
@@ -265,12 +301,11 @@ class Main {
     }
   }
 
-
-
   public static void main(String[] args) {
-    Cliente[] clientes = new Cliente[3];
-    // clientes[0] = new Cliente("Guilherme", 0, 654321, true);
-    // clientes[1] = new Cliente("Sabrina", 1, 123, false);
+    Cliente[] clientes = new Cliente[tam];
+    clientes[0] = null;
+    clientes[1] = null;
+    clientes[2] = null;
     // cadastro(clientes);
     
     int entrada;
@@ -290,13 +325,11 @@ class Main {
           System.out.println("Informe o número de conta:");
           entrada = Integer.parseInt(System.console().readLine());
           if(nClientes>0) {
-            for(int i=0;i<nClientes;i++) {
-              if(clientes[i] != NULL && clientes.getId() == entrada) showMenu(entrada, clientes);
+            for(int i=0;i<tam;i++) {
+              if(clientes[i] != null && clientes[i].getId() == entrada) showMenu(entrada, clientes);
             }
           }
-          else {
-            System.out.println("Não temos nenhuma conta cadastrada. Seja o primeiro!");
-          }
+          else System.out.println("Não temos nenhuma conta cadastrada. Seja o primeiro!");
           break;
       }
     }
