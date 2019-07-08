@@ -3,8 +3,6 @@ import java.util.Scanner;
 abstract class ContaBancaria {
   private double saldo;
   private Cliente dono;
-  private double emprestimo;
-
 
   public abstract void aplicaJuros();
 
@@ -35,6 +33,22 @@ abstract class ContaBancaria {
     else {
       System.out.println("Você não possui saldo suficiente para sacar este valor!");
     }
+  }
+}
+
+class ContaCorrente extends ContaBancaria {
+  private double emprestimo;
+
+  public ContaCorrente(int saldo, Cliente dono) {
+    setSaldo(saldo);
+    setDono(dono);
+    setEmprestimo(0);
+  }
+
+  public void aplicaJuros() {
+    double emprestimo = getEmprestimo();
+    double saldo = getSaldo();
+    setSaldo(saldo-(emprestimo*0.03));
   }
 
   public double getEmprestimo() {
@@ -67,20 +81,6 @@ abstract class ContaBancaria {
     else {
       System.out.println("Você não possui saldo suficiente para quitar o empréstimo!");
     }
-  }
-}
-
-class ContaCorrente extends ContaBancaria {
-  public ContaCorrente(int saldo, Cliente dono) {
-    setSaldo(saldo);
-    setDono(dono);
-    setEmprestimo(0);
-  }
-
-  public void aplicaJuros() {
-    double emprestimo = getEmprestimo();
-    double saldo = getSaldo();
-    setSaldo(saldo-(emprestimo*0.03));
   }
 }
 
@@ -210,8 +210,10 @@ class BancoC {
   public static void pulaMes(Cliente[] clientes) {
     int nClientes = clientes.length;
     for(int i=0; i<nClientes; i++) {
-      ContaBancaria conta = clientes[i].getConta();
-      conta.aplicaJuros();
+      if(clientes[i] != null) {
+        ContaBancaria conta = clientes[i].getConta();
+        conta.aplicaJuros();
+      }
     }
   }
 
@@ -222,7 +224,7 @@ class BancoC {
       do {
         System.out.println("\nNome: " + clientes[nConta].getNome());
         System.out.println("Nº da Conta: 0" + clientes[nConta].getId());
-        System.out.println("Saldo: R$" + (conta.getSaldo()) + " (Emprestimo: R$" + conta.getEmprestimo() + ")");
+        System.out.println("Saldo: R$" + (conta.getSaldo()) + " (Emprestimo: R$" + ((ContaCorrente)conta).getEmprestimo() + ")");
         System.out.println("\nO que voce deseja?");
         System.out.println("1- Realizar Depósito");
         System.out.println("2- Realizar Saque");
@@ -247,10 +249,10 @@ class BancoC {
           case 3:
             System.out.println("\nQual o valor do empréstimo?");
             valor = Integer.parseInt(System.console().readLine());
-            conta.pedirEmprestimo(valor);
+            ((ContaCorrente)conta).pedirEmprestimo(valor);
             break;
           case 4:
-            conta.quitaEmprestimo();
+            ((ContaCorrente)conta).quitaEmprestimo();
             break;
           case 5:
             pulaMes(clientes);
