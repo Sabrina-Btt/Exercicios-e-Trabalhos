@@ -171,5 +171,29 @@ acha (h1:b1) elem
 	| (fst h1) == elem = [(snd h1)]
 	| otherwise = acha b1 elem
 	
+--exercicio 25--
+unpack [] = []
+unpack (cab:corpo) = [(take (iguais cab (cab:corpo)) (cab:corpo))] ++ (unpack (drop (iguais cab (cab:corpo)) (cab:corpo)))
+
+--exercicio 26--
+applylist [] n = []
+applylist (cab:corpo) n = [(cab n)] ++ applylist corpo n
+
+--exercicio 27--
+mydropwhile f [] = []
+mydropwhile f (cab:corpo)
+	| (f cab) == True = (mydropwhile f corpo)
+	| otherwise = (cab:corpo)
+	
+--exercicio 28--
+zip2 [] [] = []
+zip2 (h1:b1) (h2:b2) = [(h1,h2)] ++ zip2 b1 b2
+
+--exercicio 29--
+divide [] = []
+divide (cab:corpo) = (map (/cab) [cab]) ++ divide corpo
+
+lenght1 lista = sum (divide lista)
+	
     
     
