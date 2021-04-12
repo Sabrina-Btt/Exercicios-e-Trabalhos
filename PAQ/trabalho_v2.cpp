@@ -11,6 +11,7 @@
 
 using namespace std;
 
+//Estrutura contendo os dados das ocorrencias de cada palavra
 struct Ocorrencia{
     int arquivo; //posição do arquivo na lista de arquivos processados.
     int qtdOcorrencias=0; //qtd de vezes em que a palavra foi encontrada
@@ -23,20 +24,22 @@ struct Palavra{
     int tamPalavra;
     string caracteres;
     int qtdOcorrencias=0; //qtd arquivos que possuem a palavra
-    vector <Ocorrencia> ocorrencias;
+    vector <Ocorrencia> ocorrencias; //lista com as ocorrencias da palavra
 }typedef palavra;
 
 
+//Estrutura contendo os nome de cada arquivo lido
 struct Arquivo{
     string nomeArquivo; //nome de um arquivo texto já processado
 }typedef arquivo;
 
 
+//Estrutura contendo os dados dos arquivos e palavras lidas
 struct Indice{
     int qtdArquivos=0; //quantidade de arquivos de texto lidos até então
     vector<Arquivo> arquivos; //lista contendo os nomes dos arquivos texto já processados
     int qtdPalavras=0;
-    vector<Palavra> palavras;//lista contendo todas as palavras já encontrada
+    vector<Palavra> palavras;//lista contendo todas as palavras já encontradas
 }typedef indice;
 
 string name;
@@ -111,13 +114,12 @@ vector<palavra> insertVector(palavra word, vector<palavra> p, indice* ind){
                 }
                 break;
 
-          } else if(i+1==p.size()){
+          }else if(i+1==p.size()){
                     ind->qtdPalavras++;
                     p.push_back(word);
                     break;
           }
         }
-
     }
     return p;
 }
@@ -163,25 +165,15 @@ int main(){
             case 1:{
                 vector<string> lines;
                 lines = getLines(&ind);
+                //Caso um arquivo já tenha sido processado, um aviso é retornado ao usuário
                 if(lines[0]=="-1"){
                     cout << "Indice para arquivo ja criado!" << endl;
                     break;
                 }
+                //Senão apenas criamos nosso índice normalmente
                 getPalavras(lines,&ind);
 
                 cout << "Indice para o arquivo " << name << " criado com sucesso!";
-
-                for(int i=0; i<ind.palavras.size(); i++){
-                    for(int j=0; j<ind.palavras[i].ocorrencias.size();j++){
-
-                        cout << "Arquivo:" << ind.palavras[i].ocorrencias[j].arquivo << " QtdOcor: " << ind.palavras[i].ocorrencias[j].qtdOcorrencias << "Linhas:";
-                        for(int w=0;w<ind.palavras[i].ocorrencias[j].linhas.size();w++){
-                            cout << " " << ind.palavras[i].ocorrencias[j].linhas[w];
-                        }
-                    }
-                    cout << ind.palavras[i].caracteres << endl;
-                }
-                cout << "Qtd: " << ind.qtdPalavras << endl;
 
             }break;
 
@@ -191,29 +183,45 @@ int main(){
                 if(f == NULL)
                     cout << "Erro ao abrir o arquivo.";
                 else{
-                    int s = ind.palavras.size();
-                    int s_w=0;
-                    fwrite(&s,sizeof(int),1,f);
+                    fwrite(&ind.qtdArquivos,sizeof(int),1,f);
 
-                    for(int i=0; i<ind.palavras.size(); i++){
+                    for(int i=0; i<ind.arquivos.size(); i++){
+                        int tamNomeArq = ind.arquivos[i].nomeArquivo.size();
+                        fwrite(&tamNomeArq, sizeof(int), 1, f);
+                        fwrite(&(ind.arquivos[i].nomeArquivo.c_str()[0]), sizeof(char),tamNomeArq, f);
+                    }
 
-                        fwrite(&ind.palavras[i].tamPalavra, sizeof(int), 1, f);
-                        fwrite(&(ind.palavras[i].caracteres.c_str()[0]), sizeof(char), ind.palavras[i].tamPalavra, f);
+                    fwrite(&ind.qtdPalavras,sizeof(int),1,f);
 
-                        int tam = ind.palavras[i].ocorrencias[i].linhas.size();
+                    for(int j=0; j<ind.palavras.size(); j++){
+                        fwrite(&ind.palavras[j].tamPalavra, sizeof(int), 1, f);
+                        fwrite(&(ind.palavras[j].caracteres.c_str()[0]), sizeof(char), ind.palavras[j].tamPalavra, f);
+                        fwrite(&ind.palavras[j].qtdOcorrencias, sizeof(int), 1, f);
 
-                        fwrite(&tam, sizeof(int), 1, f);
-                        fwrite(&(ind.palavras[i].ocorrencias[i].linhas[0]), sizeof(int), ind.palavras[i].ocorrencias[i].linhas.size(), f);
-
+                        for(int k=0; k<ind.palavras[j].ocorrencias.size(); k++){
+                            fwrite(&ind.palavras[j].ocorrencias[k].arquivo, sizeof(int), 1, f);
+                            fwrite(&ind.palavras[j].ocorrencias[k].qtdOcorrencias, sizeof(int), 1, f);
+                            fwrite(&(ind.palavras[j].ocorrencias[k].linhas[0]), sizeof(int), ind.palavras[j].ocorrencias[k].linhas.size(), f);
+                        }
                     }
                     cout << "Arquivo de índices criado com sucesso!" << endl;
                 }
                 fclose(f);
 
-               cout << "...";
+                //Zeramos a estrutura do índice caso o usuário queira criar e salvar outro
+                ind.qtdArquivos = 0;
+                ind.arquivos.clear();
+                ind.qtdPalavras = 0;
+                ind.palavras.clear();
+
+            }break;
+
+            case 3:{
+                cout << "Em breve!" << endl;
             }break;
         }
     }while(option!=4);
 
     return 0;
 }
+
