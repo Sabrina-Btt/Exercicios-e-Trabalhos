@@ -111,6 +111,7 @@ vector<palavra> insertVector(palavra word, vector<palavra> p, indice* ind){
                 for(int j=0;j<p[i].ocorrencias.size();j++){
                     if(p[i].ocorrencias[j].arquivo == word.ocorrencias[0].arquivo){
                         p[i].ocorrencias[j].qtdOcorrencias++;
+                        cout << "entrou";
                         p[i].ocorrencias[j].linhas.push_back(word.ocorrencias[0].linhas[0]);
                         break;
                     }else{
@@ -121,7 +122,7 @@ vector<palavra> insertVector(palavra word, vector<palavra> p, indice* ind){
                      p[i].ocorrencias.push_back(word.ocorrencias[0]);
                      break;
                 }
-
+            break;
           }else if(i+1==p.size()){
                     ind->qtdPalavras++;
                     p.push_back(word);
@@ -159,8 +160,34 @@ void getPalavras(vector<string> lines, indice* ind){
     }
 }
 
+void buscaSimples(string s, indice* ind){
+    int in=0, c=0;
+    int aux = ind->letras[tolower(s.c_str()[0]-97)];
+
+    for(int i=aux; i<ind->palavras.size(); i++){
+        if(ind->palavras[i].caracteres == s){
+            for(int j=0;j<ind->palavras[i].ocorrencias.size();j++){
+                cout << "\nA palavra aparece no arquivo ";
+                in = ind->palavras[i].ocorrencias[j].arquivo;
+                cout << ind->arquivos[in-1].nomeArquivo;
+                cout << " na(s) linha(s): ";
+                for(int k=0;k<ind->palavras[i].ocorrencias[j].linhas.size();k++){
+                    cout << ind->palavras[i].ocorrencias[j].linhas[k] << " ";
+                }
+            }cout << endl;
+            }
+        else{
+            c++;
+        }
+    }if(c==ind->palavras.size()){
+        cout << "Palavra não encontrada!\n";
+    }
+
+}
+
+
 int main(){
-    int option=0;
+    int option=0, op=0;
     setlocale(LC_ALL, "Portuguese");
     indice ind;
     indice indl;
@@ -220,7 +247,9 @@ int main(){
 
                     for(int j=0; j<ind.qtdPalavras; j++){
                         fwrite(&ind.palavras[j].tamPalavra, sizeof(int), 1, f);
+                        ind.palavras[j].caracteres = ind.palavras[j].caracteres + '\0';
                         fwrite(&(ind.palavras[j].caracteres.c_str()[0]), sizeof(char), ind.palavras[j].tamPalavra, f);
+                        cout << ind.palavras[j].caracteres << endl;
                         ind.palavras[j].qtdOcorrencias = ind.palavras[j].ocorrencias.size();
                         fwrite(&ind.palavras[j].qtdOcorrencias, sizeof(int), 1, f);
                         cout << "qtd arquivos: " << ind.palavras[j].qtdOcorrencias << endl;
@@ -246,67 +275,95 @@ int main(){
             }break;
 
             case 3:{
-                cout << "Em breve!" << endl;
+               for(int l=0;l<26;l++){
+                    ind.letras[l] = -1;
+                }
+
                 //Abrimos para leitura o arquivo binário de índices
                FILE *f = fopen("indice.dat","rb");
                if(f == NULL)
                     cout << "Erro ao abrir o arquivo.";
                else{
-                    fread(&indl.qtdArquivos,sizeof(int),1,f);
+                    fread(&ind.qtdArquivos,sizeof(int),1,f);
 
 
-                    for(int i=0; i<indl.qtdArquivos; i++){
+                    for(int i=0; i<ind.qtdArquivos; i++){
                         int tamNomeArq;
                         fread(&tamNomeArq, sizeof(int), 1, f);
 
                         char* arq = (char*) malloc(sizeof(char) * tamNomeArq);
                         fread(arq, sizeof(char), tamNomeArq, f);
 
+                        cout << "arquivo: " << arq << endl;
+
                         arquivo new_arq;
                         new_arq.nomeArquivo = string(arq);
-                        indl.arquivos.push_back(new_arq);
+                        ind.arquivos.push_back(new_arq);
 
                         free(arq);
                     }
 
-                    fread(&indl.qtdPalavras,sizeof(int),1,f);
+                    fread(&ind.qtdPalavras,sizeof(int),1,f);
 
-                    ocorrencia new_ocor;
-                    for(int j=0; j<indl.qtdPalavras; j++){
-                        palavra new_palavra;
-                        fread(&new_palavra.tamPalavra, sizeof(int), 1, f);
-                        cout << "tamanho: " << new_palavra.tamPalavra << endl;
+                    char aux;
+                    for(int j=0; j<ind.qtdPalavras; j++){
+                         palavra new_palavra;
 
-                        char* p = (char*) malloc(sizeof(char) * (new_palavra.tamPalavra));
-                        fread(p, sizeof(char), new_palavra.tamPalavra, f);
-                        new_palavra.caracteres = string(p);
+                        int tamPalavra;
+                        fread(&tamPalavra, sizeof(int), 1, f);
+                        cout << "tamanho: " << tamPalavra << endl;
+
+                        char* s = (char*) malloc(sizeof(char) * tamPalavra);
+                        fread(s, sizeof(char), tamPalavra, f);
+                        cout << "t: " << strlen(s) << endl;
+
+                        new_palavra.tamPalavra = tamPalavra;
+                        new_palavra.caracteres = string(s, tamPalavra);
+                        if(j==0){
+                            aux = new_palavra.caracteres.c_str()[0];
+                            ind.letras[tolower(new_palavra.caracteres.c_str()[0]) -97] = j;
+
+                        }else if(aux != new_palavra.caracteres.c_str()[0]){
+                            aux = new_palavra.caracteres[0];
+                            ind.letras[tolower(new_palavra.caracteres.c_str()[0]) -97] = j;
+                        }else{
+                             aux = new_palavra.caracteres.c_str()[0];
+                        }
+                        cout << "palavra: " << new_palavra.caracteres << endl;
+
+                        free(s);
 
                         fread(&new_palavra.qtdOcorrencias, sizeof(int), 1, f);
                         //cout << indl.palavras[j].qtdOcorrencias << endl;
 
 
+
                         for(int k=0; k<new_palavra.qtdOcorrencias; k++){
+                            ocorrencia new_ocor;
                             fread(&new_ocor.arquivo, sizeof(int), 1, f);
                             fread(&new_ocor.qtdOcorrencias, sizeof(int), 1, f);
+                            cout << new_ocor.qtdOcorrencias << endl;
                             //cout << indl.palavras[j].ocorrencias[k].qtdOcorrencias << endl;
 
                             int* linhas = (int*) malloc(sizeof(int) * (new_ocor.qtdOcorrencias));
                             fread(linhas, sizeof(int), new_ocor.qtdOcorrencias , f);
 
-                            for(int i = 0; i <= new_ocor.qtdOcorrencias ; i++){
-                                //cout << "oi";
+                            cout << "linhas: " << endl;
+                            for(int i = 0; i < new_ocor.qtdOcorrencias ; i++){
+                                cout << linhas[i] << endl;
                                 new_ocor.linhas.push_back(linhas[i]);
                             }
                             new_palavra.ocorrencias.push_back(new_ocor);
+                            cout << "tamanho ocor: " << new_palavra.ocorrencias.size()<< endl;
                             free(linhas);
                         }
-                        indl.palavras.push_back(new_palavra);
-                      free(p);
+                        ind.palavras.push_back(new_palavra);
+
                     }
 
 
-                    for(int j=0; j<indl.qtdPalavras; j++){
-                        cout << indl.palavras[j].caracteres << "foi lido"<< endl;
+                    for(int j=0; j<26; j++){
+                        cout << ind.letras[j] << endl;
                     }
 
                }
@@ -314,8 +371,34 @@ int main(){
                fclose(f);
 
             }break;
-        }
-    }while(option!=5);
+
+        case 4:{
+             string p_in;
+             do{
+                cout << "\n-------Menu de Buscas--------" << endl;
+                cout << "1- Busca Simples" << endl;
+                cout << "2- Busca Composta" << endl;
+                cout << "3- Voltar ao menu inicial" << endl;
+                cin >> op;
+
+                switch(op){
+                    case 1:{
+                        int in=0;
+                        cout << "Digite a palavra que deseja buscar: " << endl;
+                        cin >> p_in;
+                        p_in = strlwr((char*)p_in.c_str());
+                        buscaSimples(p_in,&ind);
+                    }break;
+                    case 2:{
+                         cout << "Em breve!" << endl;
+                    }break;
+                }
+             }while(op!=3);
+
+        } break;
+    }
+}while(option!=5);
 
     return 0;
 }
+
