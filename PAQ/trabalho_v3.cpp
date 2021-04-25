@@ -161,11 +161,16 @@ void getPalavras(vector<string> lines, indice* ind){
 }
 
 void buscaSimples(string s, indice* ind){
-    int in=0, c=0;
+    int in=0, c=ind->letras[tolower(s.c_str()[0]-97)];
     int aux = ind->letras[tolower(s.c_str()[0]-97)];
 
+    if(aux == -1){
+        cout << "Palavra não encontrada!" << endl;
+        return;
+    }
+
     for(int i=aux; i<ind->palavras.size(); i++){
-        if(ind->palavras[i].caracteres == s){
+        if(strcmp((char*)s.c_str(),(char*)ind->palavras[i].caracteres.c_str())==0){
             for(int j=0;j<ind->palavras[i].ocorrencias.size();j++){
                 cout << "\nA palavra aparece no arquivo ";
                 in = ind->palavras[i].ocorrencias[j].arquivo;
@@ -175,15 +180,111 @@ void buscaSimples(string s, indice* ind){
                     cout << ind->palavras[i].ocorrencias[j].linhas[k] << " ";
                 }
             }cout << endl;
-            }
+            return;
+        }
         else{
             c++;
         }
     }if(c==ind->palavras.size()){
         cout << "Palavra não encontrada!\n";
     }
-
 }
+
+void buscaCompostaE(vector<string> p_busca, indice* ind){
+    int in=0, found=0, c=0, not_found=0;
+    vector<int> arqs;
+
+    for(int i=0; i<p_busca.size(); i++){
+        int c=ind->letras[tolower(p_busca[i].c_str()[0]-97)];
+        int aux = ind->letras[tolower(p_busca[i].c_str()[0]-97)];
+
+        if(aux == -1){
+            cout << "A busca composta não obteve nenhum resultado" << endl;
+            return;
+        }
+
+        for(int j=aux; j<ind->palavras.size(); j++){
+            if(strcmp((char*)p_busca[i].c_str(),(char*)ind->palavras[j].caracteres.c_str())==0){
+                   if(found ==1){
+                        for(int k=0;k<ind->palavras[j].ocorrencias.size();k++){
+                            cout << ind->palavras[j].ocorrencias.size();
+                            for(a : arqs){
+                                if(ind->palavras[j].ocorrencias[k].arquivo == a){
+                                    in = ind->palavras[j].ocorrencias[k].arquivo;
+                                    cout << "As palavras foram encontradas no arquivo " << ind->arquivos[in-1].nomeArquivo << endl;
+                                    break;
+                                }
+                                else
+                                    not_found++;
+                            }
+                        }
+                        if(not_found == (ind->palavras[j].ocorrencias.size()*arqs.size())){
+                            cout << ind->palavras[j].ocorrencias.size() << endl;
+                        }
+                        return;
+
+                   }
+                   for(int l=0;l<ind->palavras[j].ocorrencias.size();l++){
+                       arqs.push_back(ind->palavras[j].ocorrencias[l].arquivo);
+                   }
+                   found++;
+            }else{
+                c++;
+            }
+        }if(c==ind->palavras.size()){
+            cout << "A busca composta não obteve nenhum resultado" << endl;
+            return;
+        }
+    }
+}
+
+void buscaCompostaOU(vector<string> p_busca, indice* ind){
+    int in=0, found=0, c=0, not_found=0;
+    vector<int> arqs;
+
+    for(int i=0; i<p_busca.size(); i++){
+        int c=ind->letras[tolower(p_busca[i].c_str()[0]-97)];
+        int aux = ind->letras[tolower(p_busca[i].c_str()[0]-97)];
+
+        if(aux == -1){
+            break;
+        }
+
+        for(int j=aux; j<ind->palavras.size(); j++){
+            if(strcmp((char*)p_busca[i].c_str(),(char*)ind->palavras[j].caracteres.c_str())==0){
+                   if(found ==1){
+                        for(int k=0;k<ind->palavras[j].ocorrencias.size();k++){
+                            cout << ind->palavras[j].ocorrencias.size();
+                            for(a : arqs){
+                                if(ind->palavras[j].ocorrencias[k].arquivo == a){
+                                    in = ind->palavras[j].ocorrencias[k].arquivo;
+                                    cout << "As palavras foram encontradas no arquivo " << ind->arquivos[in-1].nomeArquivo << endl;
+                                    break;
+                                }
+                                else
+                                    not_found++;
+                            }
+                        }
+                        if(not_found == (ind->palavras[j].ocorrencias.size()*arqs.size())){
+                            cout << ind->palavras[j].ocorrencias.size() << endl;
+                        }
+                        return;
+
+                   }
+                   for(int l=0;l<ind->palavras[j].ocorrencias.size();l++){
+                       arqs.push_back(ind->palavras[j].ocorrencias[l].arquivo);
+                   }
+                   found++;
+            }else{
+                c++;
+            }
+        }if(c==ind->palavras.size()){
+            cout << "A busca composta não obteve nenhum resultado" << endl;
+            return;
+        }
+    }
+}
+
 
 
 int main(){
@@ -191,6 +292,7 @@ int main(){
     setlocale(LC_ALL, "Portuguese");
     indice ind;
     indice indl;
+    bool salvo = false;
     for(int l=0;l<26;l++){
         ind.letras[l] = -1;
     }
@@ -272,6 +374,8 @@ int main(){
                 ind.qtdPalavras = 0;
                 ind.palavras.clear();
 
+                salvo = true;
+
             }break;
 
             case 3:{
@@ -286,7 +390,6 @@ int main(){
                else{
                     fread(&ind.qtdArquivos,sizeof(int),1,f);
 
-
                     for(int i=0; i<ind.qtdArquivos; i++){
                         int tamNomeArq;
                         fread(&tamNomeArq, sizeof(int), 1, f);
@@ -297,7 +400,7 @@ int main(){
                         cout << "arquivo: " << arq << endl;
 
                         arquivo new_arq;
-                        new_arq.nomeArquivo = string(arq);
+                        new_arq.nomeArquivo = string(arq,tamNomeArq);
                         ind.arquivos.push_back(new_arq);
 
                         free(arq);
@@ -366,6 +469,7 @@ int main(){
                         cout << ind.letras[j] << endl;
                     }
 
+                    salvo = false;
                }
 
                fclose(f);
@@ -377,23 +481,51 @@ int main(){
              do{
                 cout << "\n-------Menu de Buscas--------" << endl;
                 cout << "1- Busca Simples" << endl;
-                cout << "2- Busca Composta" << endl;
-                cout << "3- Voltar ao menu inicial" << endl;
+                cout << "2- Busca Composta (E)" << endl;
+                cout << "3- Busca Composta (OU)" << endl;
+                cout << "4- Voltar ao menu inicial" << endl;
                 cin >> op;
 
                 switch(op){
                     case 1:{
-                        int in=0;
+                        if(salvo){
+                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                            break;
+                        }
                         cout << "Digite a palavra que deseja buscar: " << endl;
                         cin >> p_in;
                         p_in = strlwr((char*)p_in.c_str());
                         buscaSimples(p_in,&ind);
                     }break;
                     case 2:{
-                         cout << "Em breve!" << endl;
+                        if(salvo){
+                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                            break;
+                        }
+
+                        cout << "Digite as palavras que deseja buscar: " << endl;
+                        cin.ignore();
+                        getline( cin, p_in);
+
+                        vector<string> p_busca;
+                        char * pch;
+                        pch = strtok ((char*)p_in.c_str()," ,-");
+                        while (pch != NULL){
+                            strlwr(pch);
+                            p_busca.push_back(pch);
+                            pch = strtok (NULL, " ,-");
+                        }
+
+                        for(p: p_busca){
+                            cout << p << endl;
+                        }
+
+                        buscaCompostaE(p_busca,&ind);
+
+
                     }break;
                 }
-             }while(op!=3);
+             }while(op!=4);
 
         } break;
     }
@@ -401,4 +533,3 @@ int main(){
 
     return 0;
 }
-
