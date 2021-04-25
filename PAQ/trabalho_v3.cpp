@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-///Trabalho paq- segunda parte
+///Trabalho paq- terceira parte
 ///Aluna: Sabrina Bittencourt Sampaio
 
 using namespace std;
@@ -238,52 +238,86 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
     }
 }
 
-void buscaCompostaOU(vector<string> p_busca, indice* ind){
-    int in=0, found=0, c=0, not_found=0;
-    vector<int> arqs;
+vector<int> buscaAux(string s, indice* ind){
+    int in=0, c=ind->letras[tolower(s.c_str()[0]-97)];
+    int aux = ind->letras[tolower(s.c_str()[0]-97)];
+    vector<int> ind_arquivos;
 
-    for(int i=0; i<p_busca.size(); i++){
-        int c=ind->letras[tolower(p_busca[i].c_str()[0]-97)];
-        int aux = ind->letras[tolower(p_busca[i].c_str()[0]-97)];
+    if(aux == -1){
+        return ind_arquivos;
+    }
 
-        if(aux == -1){
-            break;
-        }
-
-        for(int j=aux; j<ind->palavras.size(); j++){
-            if(strcmp((char*)p_busca[i].c_str(),(char*)ind->palavras[j].caracteres.c_str())==0){
-                   if(found ==1){
-                        for(int k=0;k<ind->palavras[j].ocorrencias.size();k++){
-                            cout << ind->palavras[j].ocorrencias.size();
-                            for(a : arqs){
-                                if(ind->palavras[j].ocorrencias[k].arquivo == a){
-                                    in = ind->palavras[j].ocorrencias[k].arquivo;
-                                    cout << "As palavras foram encontradas no arquivo " << ind->arquivos[in-1].nomeArquivo << endl;
-                                    break;
-                                }
-                                else
-                                    not_found++;
-                            }
-                        }
-                        if(not_found == (ind->palavras[j].ocorrencias.size()*arqs.size())){
-                            cout << ind->palavras[j].ocorrencias.size() << endl;
-                        }
-                        return;
-
-                   }
-                   for(int l=0;l<ind->palavras[j].ocorrencias.size();l++){
-                       arqs.push_back(ind->palavras[j].ocorrencias[l].arquivo);
-                   }
-                   found++;
-            }else{
-                c++;
+    for(int i=aux; i<ind->palavras.size(); i++){
+        if(strcmp((char*)s.c_str(),(char*)ind->palavras[i].caracteres.c_str())==0){
+            for(int j=0;j<ind->palavras[i].ocorrencias.size();j++){
+                ind_arquivos.push_back(ind->palavras[i].ocorrencias[j].arquivo);
             }
-        }if(c==ind->palavras.size()){
-            cout << "A busca composta não obteve nenhum resultado" << endl;
-            return;
+            return ind_arquivos;
         }
+        else{
+            c++;
+        }
+    }if(c==ind->palavras.size()){
+        return ind_arquivos;
     }
 }
+
+void buscaCompostaOU(vector<string> p_busca, indice* ind){
+    vector<int> lista1;
+    vector<int> lista2;
+    vector<int> resultado;
+    int tam=0;
+
+    lista1 = buscaAux(p_busca[0], ind);
+    lista2 = buscaAux(p_busca[1], ind);
+
+    tam = lista1.size() + lista2.size();
+
+    if(tam == 0){
+        cout << "A busca composta não obteve nenhum resultado" << endl;
+    }else{
+        int ind1 = 0, ind2 = 0;
+        for(int i=0; i<tam; i++){
+            if(ind1 == lista1.size() && ind2 == lista2.size())
+                break;
+            if(ind1 == lista1.size()){
+                resultado.push_back(lista2[ind2]);
+                ind2++;
+            }
+            else if(ind2 == lista2.size()){
+                resultado.push_back(lista1[ind1]);
+                ind1++;
+            }
+            else{
+                if(lista1[ind1] == lista2[ind2]){
+                    resultado.push_back(lista1[ind1]);
+                    ind1++;
+                    ind2++;
+                }
+                else if(lista1[ind1]<lista2[ind2]){
+                    resultado.push_back(lista1[ind1]);
+                    ind1++;
+                }
+                else{
+                    resultado.push_back(lista2[ind2]);
+                    ind2++;
+                }
+            }
+        }
+        cout << "Foram encontradas ocorrencias de ao menos uma das palavras no(s) arquivo(s):";
+        for(r:resultado){
+            cout <<  " " << ind->arquivos[r-1].nomeArquivo;
+        }
+        cout << endl;
+        lista1.clear();
+        lista2.clear();
+        resultado.clear();
+
+
+    }
+
+}
+
 
 
 
@@ -523,6 +557,28 @@ int main(){
                         buscaCompostaE(p_busca,&ind);
 
 
+                    }break;
+
+                    case 3:{
+                        if(salvo){
+                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                            break;
+                        }
+
+                        cout << "Digite as palavras que deseja buscar: " << endl;
+                        cin.ignore();
+                        getline( cin, p_in);
+
+                        vector<string> p_busca;
+                        char * pch;
+                        pch = strtok ((char*)p_in.c_str()," ,-");
+                        while (pch != NULL){
+                            strlwr(pch);
+                            p_busca.push_back(pch);
+                            pch = strtok (NULL, " ,-");
+                        }
+
+                        buscaCompostaOU(p_busca,&ind);
                     }break;
                 }
              }while(op!=4);
