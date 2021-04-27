@@ -111,7 +111,6 @@ vector<palavra> insertVector(palavra word, vector<palavra> p, indice* ind){
                 for(int j=0;j<p[i].ocorrencias.size();j++){
                     if(p[i].ocorrencias[j].arquivo == word.ocorrencias[0].arquivo){
                         p[i].ocorrencias[j].qtdOcorrencias++;
-                        cout << "entrou";
                         p[i].ocorrencias[j].linhas.push_back(word.ocorrencias[0].linhas[0]);
                         break;
                     }else{
@@ -160,6 +159,7 @@ void getPalavras(vector<string> lines, indice* ind){
     }
 }
 
+//Função para realizar uma busca simples dada uma palavra
 void buscaSimples(string s, indice* ind){
     int in=0, c=ind->letras[tolower(s.c_str()[0]-97)];
     int aux = ind->letras[tolower(s.c_str()[0]-97)];
@@ -190,6 +190,7 @@ void buscaSimples(string s, indice* ind){
     }
 }
 
+//Função para realizar a busca composta E
 void buscaCompostaE(vector<string> p_busca, indice* ind){
     int in=0, found=0, c=0, not_found=0;
     vector<int> arqs;
@@ -238,6 +239,7 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
     }
 }
 
+//Função de busca auxiliar que retorna os valores dos arquivos que uma palavra ocorre
 vector<int> buscaAux(string s, indice* ind){
     int in=0, c=ind->letras[tolower(s.c_str()[0]-97)];
     int aux = ind->letras[tolower(s.c_str()[0]-97)];
@@ -262,6 +264,7 @@ vector<int> buscaAux(string s, indice* ind){
     }
 }
 
+//Função para realizar a busca composta OU a partir de duas listas com os valores dos arquivos em que as palavras ocorrem
 void buscaCompostaOU(vector<string> p_busca, indice* ind){
     vector<int> lista1;
     vector<int> lista2;
@@ -313,12 +316,8 @@ void buscaCompostaOU(vector<string> p_busca, indice* ind){
         lista2.clear();
         resultado.clear();
 
-
     }
-
 }
-
-
 
 
 int main(){
@@ -338,6 +337,7 @@ int main(){
         cout << "3- Ler um arquivo de indice" << endl;
         cout << "4- Realizar buscas" << endl;
         cout << "5- Sair" << endl;
+        cout << "Escolha: ";
         cin >> option;
 
         switch(option){
@@ -353,15 +353,7 @@ int main(){
                 //Senão apenas criamos nosso índice normalmente
                 getPalavras(lines,&ind);
 
-                /*for(int l=0;l<26;l++){
-                    cout << ind.letras[l] << endl;
-                }
-
-                for(int l=0;l<ind.palavras.size();l++){
-                    cout << ind.palavras[l].caracteres << endl;
-                }*/
-
-                cout << "Indice para o arquivo " << name << " criado com sucesso!";
+                cout << "Indice para o arquivo " << name << " criado com sucesso!" << endl;
 
             }break;
 
@@ -376,6 +368,7 @@ int main(){
                     for(int i=0; i<ind.arquivos.size(); i++){
                         int tamNomeArq = ind.arquivos[i].nomeArquivo.size();
                         fwrite(&tamNomeArq, sizeof(int), 1, f);
+                        ind.arquivos[i].nomeArquivo = ind.arquivos[i].nomeArquivo + '\0';
                         fwrite(&(ind.arquivos[i].nomeArquivo.c_str()[0]), sizeof(char),tamNomeArq, f);
                     }
 
@@ -385,16 +378,13 @@ int main(){
                         fwrite(&ind.palavras[j].tamPalavra, sizeof(int), 1, f);
                         ind.palavras[j].caracteres = ind.palavras[j].caracteres + '\0';
                         fwrite(&(ind.palavras[j].caracteres.c_str()[0]), sizeof(char), ind.palavras[j].tamPalavra, f);
-                        cout << ind.palavras[j].caracteres << endl;
                         ind.palavras[j].qtdOcorrencias = ind.palavras[j].ocorrencias.size();
                         fwrite(&ind.palavras[j].qtdOcorrencias, sizeof(int), 1, f);
-                        cout << "qtd arquivos: " << ind.palavras[j].qtdOcorrencias << endl;
 
 
                         for(int k=0; k<ind.palavras[j].ocorrencias.size(); k++){
                             fwrite(&ind.palavras[j].ocorrencias[k].arquivo, sizeof(int), 1, f);
                             fwrite(&ind.palavras[j].ocorrencias[k].qtdOcorrencias, sizeof(int), 1, f);
-                            cout << "qtd ocor: " << ind.palavras[j].ocorrencias[k].qtdOcorrencias << endl;
                             fwrite(&(ind.palavras[j].ocorrencias[k].linhas[0]), sizeof(int), ind.palavras[j].ocorrencias[k].linhas.size(), f);
                         }
                     }
@@ -431,8 +421,6 @@ int main(){
                         char* arq = (char*) malloc(sizeof(char) * tamNomeArq);
                         fread(arq, sizeof(char), tamNomeArq, f);
 
-                        cout << "arquivo: " << arq << endl;
-
                         arquivo new_arq;
                         new_arq.nomeArquivo = string(arq,tamNomeArq);
                         ind.arquivos.push_back(new_arq);
@@ -448,11 +436,9 @@ int main(){
 
                         int tamPalavra;
                         fread(&tamPalavra, sizeof(int), 1, f);
-                        cout << "tamanho: " << tamPalavra << endl;
 
                         char* s = (char*) malloc(sizeof(char) * tamPalavra);
                         fread(s, sizeof(char), tamPalavra, f);
-                        cout << "t: " << strlen(s) << endl;
 
                         new_palavra.tamPalavra = tamPalavra;
                         new_palavra.caracteres = string(s, tamPalavra);
@@ -466,45 +452,35 @@ int main(){
                         }else{
                              aux = new_palavra.caracteres.c_str()[0];
                         }
-                        cout << "palavra: " << new_palavra.caracteres << endl;
 
                         free(s);
 
                         fread(&new_palavra.qtdOcorrencias, sizeof(int), 1, f);
-                        //cout << indl.palavras[j].qtdOcorrencias << endl;
-
 
 
                         for(int k=0; k<new_palavra.qtdOcorrencias; k++){
                             ocorrencia new_ocor;
                             fread(&new_ocor.arquivo, sizeof(int), 1, f);
                             fread(&new_ocor.qtdOcorrencias, sizeof(int), 1, f);
-                            cout << new_ocor.qtdOcorrencias << endl;
-                            //cout << indl.palavras[j].ocorrencias[k].qtdOcorrencias << endl;
 
                             int* linhas = (int*) malloc(sizeof(int) * (new_ocor.qtdOcorrencias));
                             fread(linhas, sizeof(int), new_ocor.qtdOcorrencias , f);
 
-                            cout << "linhas: " << endl;
                             for(int i = 0; i < new_ocor.qtdOcorrencias ; i++){
-                                cout << linhas[i] << endl;
                                 new_ocor.linhas.push_back(linhas[i]);
                             }
                             new_palavra.ocorrencias.push_back(new_ocor);
-                            cout << "tamanho ocor: " << new_palavra.ocorrencias.size()<< endl;
+
                             free(linhas);
                         }
                         ind.palavras.push_back(new_palavra);
 
                     }
 
-
-                    for(int j=0; j<26; j++){
-                        cout << ind.letras[j] << endl;
-                    }
-
                     salvo = false;
+                    cout << "Arquivo lido com sucesso!" << endl;
                }
+
 
                fclose(f);
 
@@ -518,6 +494,7 @@ int main(){
                 cout << "2- Busca Composta (E)" << endl;
                 cout << "3- Busca Composta (OU)" << endl;
                 cout << "4- Voltar ao menu inicial" << endl;
+                cout << "Escolha: ";
                 cin >> op;
 
                 switch(op){
@@ -530,6 +507,7 @@ int main(){
                         cin >> p_in;
                         p_in = strlwr((char*)p_in.c_str());
                         buscaSimples(p_in,&ind);
+
                     }break;
                     case 2:{
                         if(salvo){
@@ -550,12 +528,12 @@ int main(){
                             pch = strtok (NULL, " ,-");
                         }
 
-                        for(p: p_busca){
-                            cout << p << endl;
+                        if(p_busca.size()>2 || p_busca.size()<2){
+                            cout << "A busca composta E aceita apenas 2 palavras como entrada, tente novamente." << endl;
+                            break;
                         }
 
                         buscaCompostaE(p_busca,&ind);
-
 
                     }break;
 
@@ -578,7 +556,13 @@ int main(){
                             pch = strtok (NULL, " ,-");
                         }
 
+                        if(p_busca.size()>2 || p_busca.size()<2){
+                            cout << "A busca composta OU aceita apenas 2 palavras como entrada, tente novamente." << endl;
+                            break;
+                        }
+
                         buscaCompostaOU(p_busca,&ind);
+
                     }break;
                 }
              }while(op!=4);
