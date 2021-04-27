@@ -200,7 +200,7 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
         int aux = ind->letras[tolower(p_busca[i].c_str()[0]-97)];
 
         if(aux == -1){
-            cout << "A busca composta não obteve nenhum resultado" << endl;
+            cout << "A busca composta não obteve nenhum resultado." << endl;
             return;
         }
 
@@ -208,7 +208,6 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
             if(strcmp((char*)p_busca[i].c_str(),(char*)ind->palavras[j].caracteres.c_str())==0){
                    if(found ==1){
                         for(int k=0;k<ind->palavras[j].ocorrencias.size();k++){
-                            cout << ind->palavras[j].ocorrencias.size();
                             for(a : arqs){
                                 if(ind->palavras[j].ocorrencias[k].arquivo == a){
                                     in = ind->palavras[j].ocorrencias[k].arquivo;
@@ -220,7 +219,7 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
                             }
                         }
                         if(not_found == (ind->palavras[j].ocorrencias.size()*arqs.size())){
-                            cout << ind->palavras[j].ocorrencias.size() << endl;
+                            cout << "A busca composta não obteve nenhum resultado." << endl;
                         }
                         return;
 
@@ -233,7 +232,7 @@ void buscaCompostaE(vector<string> p_busca, indice* ind){
                 c++;
             }
         }if(c==ind->palavras.size()){
-            cout << "A busca composta não obteve nenhum resultado" << endl;
+            cout << "A busca composta não obteve nenhum resultado." << endl;
             return;
         }
     }
@@ -277,7 +276,7 @@ void buscaCompostaOU(vector<string> p_busca, indice* ind){
     tam = lista1.size() + lista2.size();
 
     if(tam == 0){
-        cout << "A busca composta não obteve nenhum resultado" << endl;
+        cout << "A busca composta não obteve nenhum resultado." << endl;
     }else{
         int ind1 = 0, ind2 = 0;
         for(int i=0; i<tam; i++){
@@ -573,3 +572,4 @@ int main(){
 
     return 0;
 }
+
