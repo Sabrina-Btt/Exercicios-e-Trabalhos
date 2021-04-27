@@ -485,91 +485,92 @@ int main(){
 
             }break;
 
-        case 4:{
-             string p_in;
-             do{
-                cout << "\n-------Menu de Buscas--------" << endl;
-                cout << "1- Busca Simples" << endl;
-                cout << "2- Busca Composta (E)" << endl;
-                cout << "3- Busca Composta (OU)" << endl;
-                cout << "4- Voltar ao menu inicial" << endl;
-                cout << "Escolha: ";
-                cin >> op;
+            case 4:{
+                 string p_in;
+                 do{
+                    cout << "\n-------Menu de Buscas--------" << endl;
+                    cout << "1- Busca Simples" << endl;
+                    cout << "2- Busca Composta (E)" << endl;
+                    cout << "3- Busca Composta (OU)" << endl;
+                    cout << "4- Voltar ao menu inicial" << endl;
+                    cout << "Escolha: ";
+                    cin >> op;
 
-                switch(op){
-                    case 1:{
-                        if(salvo){
-                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
-                            break;
-                        }
-                        cout << "Digite a palavra que deseja buscar: " << endl;
-                        cin >> p_in;
-                        p_in = strlwr((char*)p_in.c_str());
-                        buscaSimples(p_in,&ind);
+                    switch(op){
+                        case 1:{
+                            if(salvo){
+                                cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                                break;
+                            }
+                            cout << "Digite a palavra que deseja buscar: " << endl;
+                            cin >> p_in;
+                            p_in = strlwr((char*)p_in.c_str());
+                            buscaSimples(p_in,&ind);
 
-                    }break;
-                    case 2:{
-                        if(salvo){
-                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
-                            break;
-                        }
+                        }break;
+                        case 2:{
+                            if(salvo){
+                                cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                                break;
+                            }
 
-                        cout << "Digite as palavras que deseja buscar: " << endl;
-                        cin.ignore();
-                        getline( cin, p_in);
+                            cout << "Digite as palavras que deseja buscar: " << endl;
+                            cin.ignore();
+                            getline( cin, p_in);
 
-                        vector<string> p_busca;
-                        char * pch;
-                        pch = strtok ((char*)p_in.c_str()," ,-");
-                        while (pch != NULL){
-                            strlwr(pch);
-                            p_busca.push_back(pch);
-                            pch = strtok (NULL, " ,-");
-                        }
+                            vector<string> p_busca;
+                            char * pch;
+                            pch = strtok ((char*)p_in.c_str()," ,-");
+                            while (pch != NULL){
+                                strlwr(pch);
+                                p_busca.push_back(pch);
+                                pch = strtok (NULL, " ,-");
+                            }
 
-                        if(p_busca.size()>2 || p_busca.size()<2){
-                            cout << "A busca composta E aceita apenas 2 palavras como entrada, tente novamente." << endl;
-                            break;
-                        }
+                            if(p_busca.size()>2 || p_busca.size()<2){
+                                cout << "A busca composta E aceita apenas 2 palavras como entrada, tente novamente." << endl;
+                                break;
+                            }
 
-                        buscaCompostaE(p_busca,&ind);
+                            buscaCompostaE(p_busca,&ind);
 
-                    }break;
+                        }break;
 
-                    case 3:{
-                        if(salvo){
-                            cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
-                            break;
-                        }
+                        case 3:{
+                            if(salvo){
+                                cout << "O arquivo já foi salvo, para realizar buscas realize uma leitura antes" << endl;
+                                break;
+                            }
 
-                        cout << "Digite as palavras que deseja buscar: " << endl;
-                        cin.ignore();
-                        getline( cin, p_in);
+                            cout << "Digite as palavras que deseja buscar: " << endl;
+                            cin.ignore();
+                            getline( cin, p_in);
 
-                        vector<string> p_busca;
-                        char * pch;
-                        pch = strtok ((char*)p_in.c_str()," ,-");
-                        while (pch != NULL){
-                            strlwr(pch);
-                            p_busca.push_back(pch);
-                            pch = strtok (NULL, " ,-");
-                        }
+                            vector<string> p_busca;
+                            char * pch;
+                            pch = strtok ((char*)p_in.c_str()," ,-");
+                            while (pch != NULL){
+                                strlwr(pch);
+                                p_busca.push_back(pch);
+                                pch = strtok (NULL, " ,-");
+                            }
 
-                        if(p_busca.size()>2 || p_busca.size()<2){
-                            cout << "A busca composta OU aceita apenas 2 palavras como entrada, tente novamente." << endl;
-                            break;
-                        }
+                            if(p_busca.size()>2 || p_busca.size()<2){
+                                cout << "A busca composta OU aceita apenas 2 palavras como entrada, tente novamente." << endl;
+                                break;
+                            }
 
-                        buscaCompostaOU(p_busca,&ind);
+                            buscaCompostaOU(p_busca,&ind);
 
-                    }break;
-                }
-             }while(op!=4);
+                        }break;
+                    }
+                 }while(op!=4);
 
-        } break;
-    }
-}while(option!=5);
+            } break;
+        }
+    }while(option!=5);
 
     return 0;
 }
+
 
